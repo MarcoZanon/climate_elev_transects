@@ -1,0 +1,1 @@
+get tmin and tmax data (5min resolution) from http://worldclim.org/version2
