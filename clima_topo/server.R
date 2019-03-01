@@ -2,40 +2,20 @@
 library(shiny)
 library(raster)
 library(rgdal)
+library(maptools)
+
+df <- data.frame(sprintf("%02d",1:12),stringsAsFactors=FALSE)
+rownames(df) <- c("January","February","March","April","May","June","July","August","September","October","November","December")
+
+topo <- raster(x = "./data_sets/DEM_geotiff/alwdgg.tif")
 
 
 shinyServer(function(input, output) {
    
   output$distPlot <- renderPlot({
     
-    
-    topo <- raster(x = "./data_sets/DEM_geotiff/alwdgg.tif")
   
-    if (input$month=="January")          {
-      month <- "01"
-    } else if (input$month=="February")  {
-      month <- "02"
-    } else if (input$month=="March")     {
-      month <- "03"
-    } else if (input$month=="April")     {
-      month <- "04"
-    } else if (input$month=="May")       {
-      month <- "05"
-    } else if (input$month=="June")      {
-      month <- "06"
-    } else if (input$month=="July")      {
-      month <- "07"
-    } else if (input$month=="August")    {
-      month <- "08"
-    } else if (input$month=="September") {
-      month <- "09"
-    } else if (input$month=="October")   {
-      month <- "10"
-    } else if (input$month=="November")  {
-      month <- "11"
-    } else if (input$month=="December")  {
-      month <- "12"
-    }
+	month <- df[input$month,1]
       
     if (input$clim_var=="Min temp")          {
       clim_var <- "tmin"
@@ -74,10 +54,10 @@ shinyServer(function(input, output) {
     trns.topo <- spTransform(r2p.topo, CRS(proj.topo))
     df.topo <- as.data.frame(trns.topo)
     
-    par(mar=c(4,4,4,4))
+    par(mar=c(4,4.5,4,4))
     plot(df.topo$y,df.topo$alwdgg, type="n", col="red", bty='n',xlab="", ylab = "", axes=FALSE)
     axis(side=2, col.axis="black", las=1)
-    mtext("Elevation (m)",line=3, side=2, las=0, col="black")
+    mtext("Elevation (m)",line=3.5, side=2, las=0, col="black")
     axis(side=1, col.axis="black")
     mtext("Latitude", line=3, side=1, las=0, col="black")
     
@@ -132,5 +112,11 @@ shinyServer(function(input, output) {
     }
     
   })
-  
+  output$mapPlot <- renderPlot({
+    
+    data(wrld_simpl)
+      par(mar = c(0,0,0,0), xpd = FALSE)
+      plot(wrld_simpl, col='darkgrey', bg='white', border=NA, ann=FALSE, axes = FALSE)
+      segments(input$lon, input$lat_1, input$lon, input$lat_2, col="red", lwd=2.5)
+  })
 })
