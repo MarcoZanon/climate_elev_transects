@@ -43,8 +43,7 @@ shinyUI(fluidPage(
       ),
     
     
-    mainPanel(
-       plotOutput("distPlot")
+    mainPanel(    
+             plotOutput("distPlot"), plotOutput("mapPlot"))   
     )
-  )
 ))
